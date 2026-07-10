@@ -17,5 +17,17 @@ public class ExtraGaugesConfig {
             .comment("Defines the regex used by string gauge to convert from string to redstone")
             .define("stringGaugeToRedstoneRegex", "\\s*(true|1|on|yes|active|y)\\s*");
 
+    public static final ModConfigSpec.IntValue DISPLAY_COLLECTOR_POLL_TICKS = BUILDER
+            .comment("How often (in game ticks) the display collector re-reads its source,",
+                    "if the source allows periodic refreshing. Sources that only push updates",
+                    "are unaffected. Vanilla display links refresh every 100 ticks")
+            .defineInRange("displayCollectorPollTicks", 10, 1, 1200);
+
+    public static final ModConfigSpec.BooleanValue DISPLAY_COLLECTOR_REDSTONE_PAUSE = BUILDER
+            .comment("Whether a redstone signal pauses the display collector, like it pauses",
+                    "a vanilla display link. Disabled by default: collectors often sit in",
+                    "redstone-heavy gauge builds where a stray signal silently freezes them")
+            .define("displayCollectorRedstonePause", false);
+
     static final ModConfigSpec SPEC = BUILDER.build();
 }

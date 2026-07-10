@@ -12,7 +12,6 @@
 	"DisplayLinkBlockMixin",
 	"FactoryPanelBehaviourMixin",
     "LinkHandlerMixin",
-    "LinkRendererMixin",
 	"PackagerBlockEntityMixin",
 	"PackageRepackageHelperMixin",
 	"ServerboundConfigPacketMixin",
@@ -20,7 +19,8 @@
   ],
   "client": [
 	"ClickToLinkBlockItemMixin",
-	"FactoryPanelScreenMixin"
+	"FactoryPanelScreenMixin",
+    "LinkRendererMixin"
   ],
   "injectors": {
 	"defaultRequire": 1

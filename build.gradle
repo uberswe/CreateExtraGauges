@@ -128,7 +128,12 @@ dependencies {
     implementation(jarJar("net.objecthunter:exp4j:0.4.8"))
     additionalRuntimeClasspath 'net.objecthunter:exp4j:0.4.8'
 
-    implementation("net.liukrast:deployer-1.21.1:${deployer_version}")
+    // transitive=false: deployer's pom drags in its own dev-runtime compat mods
+    // (wakes, geckolib, curios, ...), one of which is client-only and crashes
+    // dedicated servers in dev runs. Everything deployer truly needs at runtime
+    // (create, ponder, registrate) is already declared above, and compat_manager
+    // is bundled inside the deployer jar via jarJar.
+    implementation("net.liukrast:deployer-1.21.1:${deployer_version}") { transitive = false }
 
     // compile against the JEI API but do not include it at runtime
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")

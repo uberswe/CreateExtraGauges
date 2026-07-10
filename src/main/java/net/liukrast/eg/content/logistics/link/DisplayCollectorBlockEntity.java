@@ -9,6 +9,7 @@ import net.liukrast.deployer.lib.logistics.board.connection.AbstractPanelSupport
 import net.liukrast.deployer.lib.logistics.board.connection.PanelConnectionBuilder;
 import net.liukrast.deployer.lib.registry.DeployerPanelConnections;
 import net.liukrast.eg.ExtraGauges;
+import net.liukrast.eg.ExtraGaugesConfig;
 import net.liukrast.eg.mixinExtension.DCFinder;
 import net.liukrast.eg.registry.EGBlockEntityTypes;
 import net.minecraft.core.BlockPos;
@@ -86,6 +87,30 @@ public class DisplayCollectorBlockEntity extends DisplayLinkBlockEntity {
         for (FactoryPanelPosition position : factoryPanelSupport.getLinkedPanels())
             return position.pos();
         return worldPosition.relative(getDirection());
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if(level == null || level.isClientSide || isVirtual()) return;
+        if(activeSource == null || !activeSource.shouldPassiveReset()) return;
+        // Poll faster than the source's default passive refresh (usually 100
+        // ticks), so gauges fed by the collector stay close to real time
+        int pollTicks = ExtraGaugesConfig.DISPLAY_COLLECTOR_POLL_TICKS.get();
+        if(pollTicks < activeSource.getPassiveRefreshTicks() && refreshTicks >= pollTicks)
+            tickSource();
+    }
+
+    @Override
+    public void tickSource() {
+        if(ExtraGaugesConfig.DISPLAY_COLLECTOR_REDSTONE_PAUSE.get()) {
+            super.tickSource();
+            return;
+        }
+        // Unlike display links, a redstone signal does not pause the collector
+        refreshTicks = 0;
+        if(level != null && !level.isClientSide)
+            updateGatheredData();
     }
 
     @Override
